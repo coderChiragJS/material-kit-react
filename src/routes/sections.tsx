@@ -1,49 +1,26 @@
 import { lazy, Suspense } from 'react';
-import { Outlet, Navigate, useRoutes } from 'react-router-dom';
-
-import Box from '@mui/material/Box';
-import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
-
-import { varAlpha } from 'src/theme/styles';
-import { AuthLayout } from 'src/layouts/auth';
+import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import { DashboardLayout } from 'src/layouts/dashboard';
 
-// ----------------------------------------------------------------------
-
-export const HomePage = lazy(() => import('src/pages/home'));
-export const BlogPage = lazy(() => import('src/pages/blog'));
-export const UserPage = lazy(() => import('src/pages/user'));
-export const SignInPage = lazy(() => import('src/pages/sign-in'));
-export const ProductsPage = lazy(() => import('src/pages/products'));
-export const Page404 = lazy(() => import('src/pages/page-not-found'));
-
-// ----------------------------------------------------------------------
-
-const renderFallback = (
-  <Box display="flex" alignItems="center" justifyContent="center" flex="1 1 auto">
-    <LinearProgress
-      sx={{
-        width: 1,
-        maxWidth: 320,
-        bgcolor: (theme) => varAlpha(theme.vars.palette.text.primaryChannel, 0.16),
-        [`& .${linearProgressClasses.bar}`]: { bgcolor: 'text.primary' },
-      }}
-    />
-  </Box>
-);
+// Lazy load pages
+const HomePage = lazy(() => import('src/sections/overview/view').then(m => ({ default: m.OverviewAnalyticsView })));
+const SignInPage = lazy(() => import('src/sections/auth/sign-in-view').then(m => ({ default: m.SignInView })));
+const Page404 = lazy(() => import('src/sections/error/not-found-view').then(m => ({ default: m.NotFoundView })));
+const ProductsPage = lazy(() => import('src/sections/product/view').then(m => ({ default: m.ProductsView })));
+const BlogPage = lazy(() => import('src/sections/blog/view').then(m => ({ default: m.BlogView })));
+const UserPage = lazy(() => import('src/sections/user/view').then(m => ({ default: m.UserView })));
 
 export function Router() {
-  return useRoutes([
+  const routes = [
     {
+      path: '/',
       element: (
         <DashboardLayout>
-          <Suspense fallback={renderFallback}>
-            <Outlet />
-          </Suspense>
+          <Outlet />
         </DashboardLayout>
       ),
       children: [
-        { element: <HomePage />, index: true },
+        { index: true, element: <HomePage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
@@ -51,11 +28,7 @@ export function Router() {
     },
     {
       path: 'sign-in',
-      element: (
-        <AuthLayout>
-          <SignInPage />
-        </AuthLayout>
-      ),
+      element: <SignInPage />,
     },
     {
       path: '404',
@@ -65,5 +38,9 @@ export function Router() {
       path: '*',
       element: <Navigate to="/404" replace />,
     },
-  ]);
-}
+  ];
+
+  const element = useRoutes(routes);
+
+  return <Suspense fallback={<div>Loading...</div>}>{element}</Suspense>;
+} 

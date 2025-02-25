@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import { RouterLink } from 'src/routes/components';
+import { RouterLink } from 'src/components/router-link';
 
 import { SimpleLayout } from 'src/layouts/simple';
 
@@ -18,7 +18,7 @@ export function NotFoundView() {
         </Typography>
 
         <Typography sx={{ color: 'text.secondary' }}>
-          Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve mistyped the URL? Be
+          Sorry, we couldn&apos;t find the page you&apos;re looking for. Perhaps you&apos;ve mistyped the URL? Be
           sure to check your spelling.
         </Typography>
 
