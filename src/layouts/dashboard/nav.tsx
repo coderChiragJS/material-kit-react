@@ -123,7 +123,7 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
           <Box component="ul" gap={0.5} display="flex" flexDirection="column">
             {data.map((item) => {
               const isActived = item.path === pathname;
-
+// {sdasdsdff}
               return (
                 <ListItem disableGutters disablePadding key={item.title}>
                   <ListItemButton
